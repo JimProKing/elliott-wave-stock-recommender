@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 Elliott Wave Stock Recommender | Trade with Calm</title>
+    <!-- Bootstrap 5.3 - 반응형 + 컴포넌트 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* 🌸 여성향 + 마음 편안한 분위기 (부드러운 파스텔 + 라벤더) */
+            --primary: #C084FC;          /* 소프트 라벤더 */
+            --primary-dark: #A855F7;
+            --accent: #F9A8D4;           /* 블러시 핑크 */
+            --accent-dark: #F472B6;
+            --success: #86EFAC;          /* 소프트 그린 */
+            --warning: #FCD34D;
+            --text: #3F2E4E;             /* 부드러운 다크 퍼플 */
+            --text-light: #6B5B7A;
+            --bg: #FDF7F5;               /* 크림 핑크 베이지 */
+            --card: #FFFFFF;
+            --border: #F3E8FF;
+            --header-bg: linear-gradient(135deg, #FADADD 0%, #E0BBE4 100%);
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+
+        /* 🌸 부드러운 여성향 헤더 */
+        .gov-header {
+            background: var(--header-bg);
+            color: #4C1D95;
+            padding: 1.1rem 0;
+            border-bottom: 3px solid #F9A8D4;
+            box-shadow: 0 2px 8px rgba(249, 168, 212, 0.25);
+        }
+        .gov-header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .gov-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            margin: 0;
+            color: #4C1D95;
+        }
+        .gov-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin: 0;
+            color: #6B5B7A;
+        }
+
+        /* 메인 컨테이너 */
+        .main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        /* 🌸 부드러운 카드 */
+        .gov-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(192, 132, 252, 0.1);
+            padding: 1.35rem;
+            margin-bottom: 1.35rem;
+        }
+
+        /* 폼 라벨 */
+        .form-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.35rem;
+            color: #5C4A6B;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #E5D4F0;
+            padding: 0.55rem 0.8rem;
+            font-size: 1rem;
+            background: #FFFBFE;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.2);
+        }
+
+        /* 🌸 여성향 + 글자 잘 보이는 스켄 버튼 (강조) */
+        .btn-gov-primary {
+            background: linear-gradient(135deg, #F9A8D4 0%, #C084FC 100%);
+            border: none;
+            color: #4C1D95 !important;          /* 진한 퍼플로 글자 선명하게 */
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.85rem 2.2rem;
+            min-height: 52px;
+            border-radius: 9999px;              /* 더 부드럽고 여성스러운 라운드 */
+            box-shadow: 0 6px 18px rgba(249, 168, 212, 0.45);
+            transition: all 0.2s ease;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+        }
+        .btn-gov-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(192, 132, 252, 0.5);
+            background: linear-gradient(135deg, #F472B6 0%, #A855F7 100%);
+            color: #3B1A6B !important;
+        }
+        .btn-gov-primary:active {
+            transform: translateY(0);
+        }
+
+        /* 🌸 부드러운 통계 카드 */
+        .stat-card {
+            text-align: center;
+            padding: 0.85rem 0.55rem;
+            border-radius: 14px;
+            background: #FFFBFE;
+            border: 1px solid #F3E8FF;
+            box-shadow: 0 2px 8px rgba(192, 132, 252, 0.08);
+        }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .stat-label {
+            font-size: 0.78rem;
+            color: #8B7A9E;
+            margin-top: 0.2rem;
+        }
+
+        /* 테이블 - 데이터 중심, 읽기 쉽게 */
+        .data-table {
+            font-size: 0.925rem;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .data-table th {
+            background-color: #f1f3f5;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            padding: 0.65rem 0.6rem;
+            border-bottom: 2px solid #adb5bd;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            user-select: none;
+        }
+        .data-table th:hover {
+            background-color: #e9ecef;
+        }
+        .data-table td {
+            padding: 0.55rem 0.6rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* 🌸 부드러운 여성향 점수 배지 */
+        .score-badge {
+            display: inline-block;
+            min-width: 2.5em;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.92rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .score-80 { background: linear-gradient(135deg, #86EFAC, #4ADE80); color: #166534; }   /* 높음 - 소프트 그린 */
+        .score-65 { background: linear-gradient(135deg, #C084FC, #A855F7); }   /* 양호 - 라벤더 */
+        .score-50 { background: linear-gradient(135deg, #F9A8D4, #F472B6); color: #831B4B; }   /* 보통 - 블러시 */
+        .score-low { background: linear-gradient(135deg, #D1D5DB, #9CA3AF); color: #4B5563; }  /* 낮음 */
+
+        /* 모바일 최적화 */
+        @media (max-width: 767.98px) {
+            .gov-title { font-size: 1.15rem; }
+            .data-table { font-size: 0.85rem; }
+            .data-table th, .data-table td { padding: 0.45rem 0.4rem; }
+            .btn-gov-primary { font-size: 1rem; padding: 0.65rem 1.5rem; width: 100%; }
+            .stat-value { font-size: 1.4rem; }
+            .main-container { padding: 1rem 0.75rem; }
+        }
+
+        /* 🌸 부드러운 로딩 오버레이 */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(192, 132, 252, 0.28);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(3px);
+        }
+        .loading-overlay.active { display: flex; }
+        .loading-content {
+            background: #FFFBFE;
+            padding: 1.9rem 2.3rem;
+            border-radius: 18px;
+            text-align: center;
+            max-width: 300px;
+            box-shadow: 0 10px 35px rgba(192, 132, 252, 0.25);
+            border: 1px solid #F3E8FF;
+        }
+        .spinner {
+            width: 42px; height: 42px;
+            border: 4px solid #F3E8FF;
+            border-top-color: #C084FC;
+            border-radius: 50%;
+            animation: spin 0.85s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 차트 모달 */
+        .modal-content { border-radius: 10px; }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 🌸 부드럽고 따뜻한 면책 + 위로 문구 */
+        .disclaimer {
+            background: linear-gradient(90deg, #FFF0F5 0%, #FDF4FF 100%);
+            border: 1px solid #F9A8D4;
+            border-radius: 12px;
+            padding: 0.9rem 1.15rem;
+            font-size: 0.9rem;
+            color: #6B4E71;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 2px 8px rgba(249, 168, 212, 0.15);
+        }
+
+        .table-responsive {
+            max-height: 620px;
+            overflow: auto;
+            border: 1px solid var(--gov-border);
+            border-radius: 6px;
+        }
+
+        .sort-icon {
+            font-size: 0.75rem;
+            margin-left: 4px;
+            opacity: 0.6;
+        }
+
+        /* 접근성: 포커스 링 */
+        button:focus-visible, input:focus-visible, a:focus-visible {
+            outline: 3px solid #0066cc;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 (정부 스타일) -->
+    <header class="gov-header">
+        <div class="container">
+            <div>
+                <h1 class="gov-title">🌸 Elliott Wave Stock Recommender</h1>
+                <p class="gov-subtitle">High-Volume Stock Scanner based on Elliott Wave Theory · Trade calmly (for reference only)</p>
+            </div>
+            <div class="text-end d-none d-md-block">
+                <small class="opacity-75">데이터: FinanceDataReader<br>내부 참고 도구</small>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- 🌸 따뜻한 위로 + 면책 -->
+        <div class="disclaimer">
+            <strong>💕 오늘도 수고 많으셨어요</strong><br>
+            이 도구는 참고용 분석일 뿐이에요. 주식하다가 마음이 힘들 땐 잠깐 쉬어가도 괜찮아요.<br>
+            <span style="font-size:0.85rem">실제 투자 결정은 언제나 본인의 판단과 충분한 검토로 해주세요. 당신을 응원해요 🌸</span>
+        </div>
+
+        <!-- 스켄 컨트롤 카드 -->
+        <div class="gov-card">
+            <h5 class="mb-3" style="color: #7C3AED; font-weight: 700;">🌸 분석 조건 설정</h5>
+
+            <form id="scanForm" onsubmit="runScan(event)">
+                <div class="row g-3">
+                    <!-- 상위 N -->
+                    <div class="col-6 col-md-3">
+                        <label for="top" class="form-label">거래대금 상위 N개</label>
+                        <input type="number" id="top" name="top" class="form-control" value="100" min="5" max="300" required>
+                        <div class="form-text">5~300</div>
+                    </div>
+
+                    <!-- 최소 점수 -->
+                    <div class="col-6 col-md-3">
+                        <label for="min_score" class="form-label">최소 EW 점수</label>
+                        <input type="number" id="min_score" name="min_score" class="form-control" value="55" min="0" max="100" required>
+                        <div class="form-text">0~100 (낮을수록 더 많은 종목)</div>
+                    </div>
+
+                    <!-- 기간 -->
+                    <div class="col-6 col-md-3">
+                        <label for="days" class="form-label">분석 기간 (거래일)</label>
+                        <input type="number" id="days" name="days" class="form-control" value="550" min="100" max="1200" required>
+                        <div class="form-text">과거 데이터 길이</div>
+                    </div>
+
+                    <!-- 반전 민감도 -->
+                    <div class="col-6 col-md-3">
+                        <label for="reversal" class="form-label">ZigZag 민감도</label>
+                        <input type="number" id="reversal" name="reversal" class="form-control" value="0.032" min="0.01" max="0.10" step="0.001" required>
+                        <div class="form-text">0.01~0.10 (낮을수록 더 많은 스윙)</div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column flex-md-row gap-2 mt-3">
+                    <button type="submit" class="btn btn-gov-primary flex-fill" id="scanBtn">
+                        💕 마음 편안하게 스켄하기
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary flex-fill" onclick="resetDefaults()">
+                        기본값 복원
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary flex-fill" onclick="loadLastResult()">
+                        이전 결과 다시 보기
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-2 small" style="color:#8B7A9E;">
+                스켄은 조금 시간이 걸려요. 마음 편하게 기다려주세요 🌸
+            </div>
+        </div>
+
+        <!-- 🌸 마음을 편하게 해주는 강아지 & 고양이 힐링 갤러리 -->
+        <div class="gov-card">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="mb-0" style="color:#9F7AEA; font-weight:700;">🐾 오늘의 마음 챙김</h6>
+                <span class="small text-muted">주식하다 지칠 때 잠깐 보면서 숨 돌려요 💕</span>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-6 col-md-3">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80" 
+                             class="img-fluid rounded-3 shadow-sm" alt="평온한 고양이" style="aspect-ratio: 1.3/1; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 px-2 py-1 rounded-bottom-3" 
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.35));">
+                            <small class="text-white" style="text-shadow: 0 1px 2px rgba(0,0,0,0.6);">평온한 하루 보내요 🌿</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&q=80" 
+                             class="img-fluid rounded-3 shadow-sm" alt="귀여운 강아지" style="aspect-ratio: 1.3/1; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 px-2 py-1 rounded-bottom-3" 
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.35));">
+                            <small class="text-white" style="text-shadow: 0 1px 2px rgba(0,0,0,0.6);">함께 쉬어요 🐶</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&q=80" 
+                             class="img-fluid rounded-3 shadow-sm" alt="잠든 강아지" style="aspect-ratio: 1.3/1; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 px-2 py-1 rounded-bottom-3" 
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.35));">
+                            <small class="text-white" style="text-shadow: 0 1px 2px rgba(0,0,0,0.6);">숨 좀 쉬고 와요 💤</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=600&q=80" 
+                             class="img-fluid rounded-3 shadow-sm" alt="작은 고양이" style="aspect-ratio: 1.3/1; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 px-2 py-1 rounded-bottom-3" 
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.35));">
+                            <small class="text-white" style="text-shadow: 0 1px 2px rgba(0,0,0,0.6);">너무 애쓰지 말아요 🐱</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결과 영역 (처음엔 숨김) -->
+        <div id="resultsSection" style="display: none;">
+            <!-- 🌸 결과 -->
+            <div class="d-flex align-items-center mb-2" style="color:#9F7AEA;">
+                <span style="font-size:1.05rem; font-weight:700;">✨ 분석 결과가 나왔어요</span>
+            </div>
+
+            <!-- 요약 통계 -->
+            <div class="row g-3 mb-3" id="summaryCards">
+                <!-- JS로 동적 삽입 -->
+            </div>
+
+            <!-- 테이블 컨트롤 -->
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text" id="searchInput" class="form-control" placeholder="종목명 또는 코드 검색..." 
+                           style="max-width: 260px;" onkeyup="filterTable()">
+                    <span class="text-muted small" id="resultCount"></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm" onclick="downloadCSV()" style="background:#F9A8D4; color:#4C1D95; border:none; font-weight:600;">
+                        📥 CSV 저장하기
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="clearResults()">
+                        결과 지우기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 데이터 테이블 (반응형 + 스크롤) -->
+            <div class="gov-card p-0">
+                <div class="table-responsive">
+                    <table class="table data-table table-hover mb-0" id="resultTable">
+                        <thead>
+                            <tr>
+                                <th data-sort="순위">순위</th>
+                                <th data-sort="종목코드">코드</th>
+                                <th data-sort="종목명">종목명</th>
+                                <th data-sort="시장" class="d-none d-md-table-cell">시장</th>
+                                <th data-sort="현재가" class="text-end">현재가</th>
+                                <th data-sort="EW점수" class="text-center">EW점수</th>
+                                <th data-sort="파동위치추정" class="d-none d-lg-table-cell">파동 위치</th>
+                                <th data-sort="RSI" class="text-end d-none d-md-table-cell">RSI</th>
+                                <th data-sort="RelVol" class="text-end d-none d-lg-table-cell">RelVol</th>
+                                <th>사유</th>
+                                <th class="text-center" style="width: 92px;">차트</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultBody">
+                            <!-- JS로 행 채움 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="small text-muted mt-1" style="color:#8B7A9E;">
+                헤더 클릭으로 정렬 • 검색창으로 실시간 필터 • 모바일에서는 가로 스크롤이에요 🌿
+            </div>
+        </div>
+
+        <!-- 안내 -->
+        <div class="text-center mt-4 mb-2">
+            <small class="text-muted">
+                🌸 Calming feminine design with cute pet healing images
+            </small>
+        </div>
+    </div>
+
+    <!-- 차트 모달 -->
+    <div class="modal fade" id="chartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: 1px solid #F3E8FF;">
+                    <h5 class="modal-title" id="chartModalTitle" style="color:#7C3AED;">🐾 종목 차트 보기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body chart-container text-center" id="chartModalBody">
+                    <!-- 이미지 또는 로딩 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 로딩 오버레이 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h6 class="mb-1" style="color:#7C3AED;">🌸 스켄 진행 중이에요...</h6>
+            <p class="mb-0 small text-muted">조금만 기다려주세요.<br>상위 종목들을 따뜻하게 분석하고 있어요 💕</p>
+            <div class="mt-2 small" style="color:#C084FC;">최대 1분 정도 걸릴 수 있어요. 깊게 숨 한 번 쉬고 있어요...</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentData = [];
+        let currentCharts = {};   // code -> base64
+        let sortColumn = 'EW점수';
+        let sortDirection = 'desc';
+
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.toggle('active', show);
+        }
+
+        function resetDefaults() {
+            document.getElementById('top').value = 100;
+            document.getElementById('min_score').value = 55;
+            document.getElementById('days').value = 550;
+            document.getElementById('reversal').value = 0.032;
+        }
+
+        async function runScan(event) {
+            event.preventDefault();
+            const form = document.getElementById('scanForm');
+            const btn = document.getElementById('scanBtn');
+            const originalText = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '⏳ 분석 중...';
+            showLoading(true);
+
+            try {
+                const formData = new FormData(form);
+                const res = await fetch('/api/scan', {
+                    method: 'POST',
+                    body: formData
+                });
+                const json = await res.json();
+
+                if (!json.success) {
+                    alert('스켄 실패: ' + (json.message || '알 수 없는 오류'));
+                    return;
+                }
+
+                currentData = json.data || [];
+                currentCharts = json.charts || {};
+
+                renderSummary(json.summary || {});
+                renderTable(currentData);
+                document.getElementById('resultsSection').style.display = 'block';
+
+                // 상위 결과로 자동 스크롤 (모바일 편의)
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (err) {
+                console.error(err);
+                alert('서버 통신 오류가 발생했습니다. 콘솔을 확인해주세요.');
+            } finally {
+                showLoading(false);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        function renderSummary(summary) {
+            const container = document.getElementById('summaryCards');
+            container.innerHTML = `
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:#C084FC;">${summary.total_analyzed || 0}</div>
+                        <div class="stat-label">조건 충족 종목</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:#A855F7;">${summary.avg_score || 0}</div>
+                        <div class="stat-label">평균 EW 점수</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:#86EFAC;">${summary.high_score_count || 0}</div>
+                        <div class="stat-label">80점 이상 (강력해요)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:#F9A8D4;">${summary.top_score || 0}</div>
+                        <div class="stat-label">최고 점수</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getScoreClass(score) {
+            if (score >= 80) return 'score-80';
+            if (score >= 65) return 'score-65';
+            if (score >= 50) return 'score-50';
+            return 'score-low';
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('resultBody');
+            tbody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="text-center py-4 text-muted">결과가 없습니다.</td></tr>';
+                document.getElementById('resultCount').textContent = '';
+                return;
+            }
+
+            // 정렬 적용
+            let sorted = [...data];
+            sorted.sort((a, b) => {
+                let valA = a[sortColumn];
+                let valB = b[sortColumn];
+
+                // 숫자형 처리
+                if (['순위', '현재가', 'EW점수', 'RSI', 'RelVol'].includes(sortColumn)) {
+                    valA = parseFloat(valA) || 0;
+                    valB = parseFloat(valB) || 0;
+                }
+
+                if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+                if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            const frag = document.createDocumentFragment();
+
+            sorted.forEach(row => {
+                const tr = document.createElement('tr');
+
+                const score = parseInt(row['EW점수']) || 0;
+                const badgeClass = getScoreClass(score);
+
+                tr.innerHTML = `
+                    <td><strong>${row['순위']}</strong></td>
+                    <td><code style="font-size:0.8rem">${row['종목코드']}</code></td>
+                    <td><strong>${row['종목명']}</strong></td>
+                    <td class="d-none d-md-table-cell">${row['시장']}</td>
+                    <td class="text-end">${Number(row['현재가']).toLocaleString()}</td>
+                    <td class="text-center">
+                        <span class="score-badge ${badgeClass}">${score}</span>
+                    </td>
+                    <td class="d-none d-lg-table-cell" style="font-size:0.82rem; line-height:1.3; max-width:210px;">
+                        ${row['파동위치추정'] || ''}
+                    </td>
+                    <td class="text-end d-none d-md-table-cell">${row['RSI']}</td>
+                    <td class="text-end d-none d-lg-table-cell">${row['RelVol']}</td>
+                    <td style="font-size:0.8rem; max-width: 260px; line-height:1.35;">
+                        ${row['사유'] || ''}
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" 
+                                style="font-size:0.78rem; padding:2px 9px;"
+                                onclick="showChart('${row['종목코드']}', '${row['종목명'].replace(/'/g, "\\'")}', ${score}, '${(row['파동위치추정'] || '').replace(/'/g, "\\'")}')">
+                            📈 보기
+                        </button>
+                    </td>
+                `;
+                frag.appendChild(tr);
+            });
+
+            tbody.appendChild(frag);
+            document.getElementById('resultCount').textContent = `${sorted.length}개 표시`;
+
+            // 헤더에 정렬 표시
+            updateSortIndicators();
+        }
+
+        function updateSortIndicators() {
+            document.querySelectorAll('#resultTable th[data-sort]').forEach(th => {
+                th.classList.remove('text-primary');
+                const col = th.getAttribute('data-sort');
+                th.innerHTML = col + (col === sortColumn ? 
+                    `<span class="sort-icon">${sortDirection === 'asc' ? '▲' : '▼'}</span>` : '');
+                if (col === sortColumn) th.classList.add('text-primary');
+            });
+        }
+
+        // 테이블 헤더 클릭 정렬
+        function attachTableSort() {
+            const headers = document.querySelectorAll('#resultTable th[data-sort]');
+            headers.forEach(th => {
+                th.addEventListener('click', () => {
+                    const col = th.getAttribute('data-sort');
+                    if (sortColumn === col) {
+                        sortDirection = (sortDirection === 'asc') ? 'desc' : 'asc';
+                    } else {
+                        sortColumn = col;
+                        sortDirection = (col === 'EW점수' || col === '순위') ? 'desc' : 'asc';
+                    }
+                    renderTable(currentData);
+                });
+            });
+        }
+
+        function filterTable() {
+            const q = document.getElementById('searchInput').value.trim().toLowerCase();
+            const rows = document.querySelectorAll('#resultBody tr');
+
+            let visible = 0;
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const show = !q || text.includes(q);
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            document.getElementById('resultCount').textContent = `${visible}개 표시`;
+        }
+
+        function downloadCSV() {
+            window.location.href = '/api/export';
+        }
+
+        function clearResults() {
+            document.getElementById('resultsSection').style.display = 'none';
+            currentData = [];
+            currentCharts = {};
+            document.getElementById('resultBody').innerHTML = '';
+        }
+
+        // 차트 모달 표시 (미리 생성된 base64 우선 사용)
+        function showChart(code, name, score, wave) {
+            const modalEl = document.getElementById('chartModal');
+            const modal = new bootstrap.Modal(modalEl);
+            const titleEl = document.getElementById('chartModalTitle');
+            const bodyEl = document.getElementById('chartModalBody');
+
+            titleEl.textContent = `${name} (${code}) - EW 점수 ${score}`;
+
+            if (currentCharts[code]) {
+                // 스켄 시 미리 만든 차트 사용 (빠름)
+                bodyEl.innerHTML = `
+                    <img src="data:image/png;base64,${currentCharts[code]}" 
+                         alt="${name} 차트" style="max-height: 520px; width:100%; object-fit: contain;">
+                    <div class="small text-muted mt-2">상위 종목 스켄 시 자동 생성된 차트입니다.</div>
+                `;
+                modal.show();
+            } else {
+                // 실시간 생성 요청
+                bodyEl.innerHTML = `
+                    <div class="py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <div class="mt-2">차트 생성 중...</div>
+                    </div>
+                `;
+                modal.show();
+
+                // 서버에서 PNG 가져오기
+                const url = `/api/chart/${code}?name=${encodeURIComponent(name)}&score=${score}&wave=${encodeURIComponent(wave)}`;
+                fetch(url)
+                    .then(r => {
+                        if (!r.ok) throw new Error('차트 생성 실패');
+                        return r.blob();
+                    })
+                    .then(blob => {
+                        const imgUrl = URL.createObjectURL(blob);
+                        bodyEl.innerHTML = `
+                            <img src="${imgUrl}" alt="${name} 차트" style="max-height: 520px; width:100%; object-fit: contain;">
+                            <div class="small text-muted mt-2">실시간 생성 차트</div>
+                        `;
+                    })
+                    .catch(err => {
+                        bodyEl.innerHTML = `<div class="text-danger p-3">차트를 불러올 수 없습니다.<br>${err}</div>`;
+                    });
+            }
+        }
+
+        async function loadLastResult() {
+            try {
+                const res = await fetch('/api/last');
+                const json = await res.json();
+                if (!json.success || !json.data || json.data.length === 0) {
+                    alert('이전 스켄 결과가 없습니다. 새로 스켄해주세요.');
+                    return;
+                }
+                currentData = json.data;
+                currentCharts = {};  // 이전 결과에는 차트 base64 없음
+                renderSummary({ 
+                    total_analyzed: currentData.length, 
+                    avg_score: (currentData.reduce((s, r) => s + (r['EW점수']||0), 0) / currentData.length).toFixed(1),
+                    high_score_count: currentData.filter(r => (r['EW점수']||0) >= 80).length,
+                    top_score: Math.max(...currentData.map(r => r['EW점수']||0))
+                });
+                renderTable(currentData);
+                document.getElementById('resultsSection').style.display = 'block';
+            } catch (e) {
+                alert('이전 결과를 불러오지 못했습니다.');
+            }
+        }
+
+        // 초기화
+        function init() {
+            // 테이블 정렬 이벤트 연결
+            attachTableSort();
+
+            console.log('%c[Elliott Wave Stock Recommender] Calming feminine UI loaded', 'color:#C084FC');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

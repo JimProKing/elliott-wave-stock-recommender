@@ -1,0 +1,7 @@
+finance-datareader>=0.9.50
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+Flask>=3.0
+# Optional but recommended for nicer progress:
+# tqdm>=4.65
