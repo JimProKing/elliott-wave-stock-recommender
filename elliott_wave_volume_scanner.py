@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-Elliott Wave Stock Recommender
-High-volume Korean stock scanner based on Elliott Wave Theory.
+Elliott Wave Stock Recommender (엘리어트 파동 주식 추천기)
 
-- Uses FinanceDataReader (Korean market)
-- Ranks top N stocks by trading value/volume
-- Uses ZigZag + technical indicators to approximate wave structures
-- Scores stocks for impulse momentum and upward potential
-- Outputs ranked list with reasons + CSV export + optional charts
+고거래량 한국 주식 대상 엘리어트 파동 이론 기반 스캐너
 
-Disclaimer: Elliott Wave analysis is subjective. This is a heuristic reference tool only.
-Investment decisions are your own responsibility.
+- FinanceDataReader 사용 (한국 시장)
+- 거래대금/거래량 상위 N개 종목 선정
+- ZigZag + 기술지표로 파동 구조 근사 분석
+- 상승 impulse 모멘텀 종목 스코어링
+- 순위 결과 + 사유 출력, CSV 저장, 차트 지원
+
+주의: 엘리어트 파동 분석은 주관적입니다. 이 도구는 참고용 휴리스틱 도구이며, 투자 결정은 본인 책임입니다.
 """
 
 import argparse
@@ -206,7 +206,7 @@ def analyze_elliott_setup(df: pd.DataFrame, swings: List[Dict]) -> Tuple[int, Li
         p_last_low = recent[-2]["price"] if not recent[-2]["is_high"] else recent[-3]["price"]
         p_last_high = recent[-1]["price"] if recent[-1]["is_high"] else close
 
-        leg_impulse = abs(p_prev_high - p_last_low)   # 직전 impulse 구간 대랍
+        leg_impulse = abs(p_prev_high - p_last_low)   # 직전 impulse 구간 대략
         leg_correct = abs(p_last_low - (recent[-3]["price"] if recent[-3]["is_high"] else p_prev_high))
 
         if leg_impulse > 1e-6:
@@ -221,7 +221,7 @@ def analyze_elliott_setup(df: pd.DataFrame, swings: List[Dict]) -> Tuple[int, Li
                 score -= 6
                 reasons.append(f"깊은 되돌림 ({retr_ratio*100:.1f}%) - 추세 전환 가능성")
 
-        # 현재 위치 대랍 추정
+        # 현재 위치 대략 추정
         if recent[-1]["is_high"]:
             # 최근 고점 형성 중 → Wave 3 또는 5 가능성
             if hh >= 2:
@@ -287,7 +287,7 @@ def get_top_volume_tickers(top_n: int = 100, by: str = "Amount") -> pd.DataFrame
     # 기본 필터: KOSPI / KOSDAQ 만
     df = df[df["Market"].isin(["KOSPI", "KOSDAQ"])]
 
-    # 비주식 성격 대랍 제외 (이름 기반)
+    # 비주식 성격 대략 제외 (이름 기반)
     exclude_keywords = ["ETF", "ETN", "인버스", "레버리지", "스팩", "SPAC", "TIGER", "KODEX", "ARIRANG", "HANARO", "SOL", "KBSTAR"]
     for kw in exclude_keywords:
         df = df[~df["Name"].str.contains(kw, case=False, na=False)]
@@ -580,7 +580,7 @@ def generate_chart_bytes(code: str, name: str = "", score: int = 0, wave_pos: st
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Elliott Wave Stock Recommender - High volume stock scanner based on Elliott Wave Theory"
+        description="Elliott Wave Stock Recommender (엘리어트 파동 주식 추천기) - 엘리어트 파동 이론 기반 고거래량 종목 스캐너"
     )
     parser.add_argument("--top", type=int, default=100, help="거래대금 상위 N개 (기본 100)")
     parser.add_argument("--days", type=int, default=550, help="히스토리 조회 기간 (거래일 여유 포함, 기본 550)")

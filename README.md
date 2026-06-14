@@ -1,130 +1,139 @@
 # 🌸 Elliott Wave Stock Recommender
+# 엘리어트 파동 주식 추천기
 
 **Elliott Wave Theory-based scanner for high-volume Korean stocks with strong upward potential.**
 
-A practical Python tool (CLI + beautiful calming web UI) that analyzes the top trading volume stocks using Elliott Wave-inspired heuristics, momentum, volume confirmation, and Fibonacci-style retracements.
+**엘리어트 파동 이론 기반 고거래량 종목 상승 가능성 분석 도구**
 
-> "Trade calmly." — Built with a soft, feminine, stress-relieving interface featuring cute dog & cat images to help you breathe while scanning the market.
+A practical Python tool (CLI + beautiful calming web UI) that analyzes the top trading volume stocks using Elliott Wave-inspired heuristics.
 
----
+거래량(거래대금) 많은 상위 종목 중 엘리어트 파동 관점에서 상승 가능성이 높은 종목을 찾아주는 파이썬 프로그램입니다.
 
-## ✨ Features
-
-- **Smart Elliott Wave Scoring**  
-  Detects impulse structures, healthy corrections (Fib 38–62%), volume confirmation on impulse legs, EMA alignment, and RSI health zones. Ranks stocks by upward potential.
-
-- **High-Liquidity Focus**  
-  Automatically targets the top N stocks by trading value (거래대금) from KOSPI + KOSDAQ.
-
-- **Powerful CLI**  
-  Fast scanning with customizable parameters and CSV export + optional matplotlib charts.
-
-- **Gorgeous Calming Web UI (Flask)**  
-  - Soft pastel feminine design (lavender + blush pink)
-  - Fully responsive (perfect on phone)
-  - Live sortable & filterable results table
-  - Beautiful score badges
-  - On-demand or pre-generated Elliott charts in modal
-  - **"Today's Healing"** section with cute, calming dog & cat photos + gentle encouraging messages
-  - Designed to reduce trading stress
-
-- **Zero hassle local setup** — just `python app.py`
+> "Trade calmly." / "마음 편하게 거래하세요."  
+> 부드러운 여성향 UI + 강아지·고양이 사진으로 주식할 때 마음이 편안해지도록 설계했습니다. 🐶🐱💕
 
 ---
 
-## 📸 Web UI Highlights
+## ✨ 주요 기능 (Features)
 
-- Feminine, cozy pastel theme (much gentler than typical trading tools)
-- Cute pet images that appear while you set parameters (because trading can be mentally exhausting 💕)
-- Clear, high-contrast data table with one-click sorting
-- Instant chart viewing for top candidates
+### 한국어
+- **엘리어트 파동 기반 스마트 스코어링**  
+  Impulse 구조, 건강한 조정(피보나치 38~62%), 거래량 확인, EMA 정배열, RSI 건강 구간 등을 종합하여 상승 가능성 점수화
+- **고유동성 종목 집중 분석**  
+  KOSPI + KOSDAQ 거래대금 상위 N개 자동 선정
+- **강력한 CLI 지원**  
+  파라미터 조정, CSV 내보내기, matplotlib 차트 생성
+- **아름다운 웹 UI (Flask)**  
+  - 소프트 파스텔 여성향 디자인 (라벤더 + 블러시 핑크)
+  - 완전 반응형 (모바일 완벽 지원)
+  - 실시간 정렬·필터 가능한 결과 테이블
+  - 점수 배지 시각화
+  - 차트 모달 (상위 종목 미리 생성 또는 즉시 생성)
+  - **"오늘의 마음 챙김"** 섹션 — 귀여운 강아지·고양이 사진 + 따뜻한 위로 문구
+  - 주식하다 지칠 때 마음을 편하게 해주는 것이 목표
+
+### English
+- Smart Elliott Wave scoring (impulse detection, Fib retracements, volume confirmation, EMA alignment, RSI zones)
+- Focus on high-liquidity stocks (top N by trading value)
+- Full-featured CLI with CSV export and charts
+- Gorgeous calming web UI with feminine soft pastel design
+- "Today's Healing" pet photo gallery for mental relief while trading
 
 ---
 
-## 🚀 Quick Start
+## 🚀 설치 및 실행 (Installation & Quick Start)
 
-### 1. Installation
-
+### 설치
 ```bash
 git clone https://github.com/JimProKing/elliott-wave-stock-recommender.git
 cd elliott-wave-stock-recommender
 pip install -r requirements.txt
 ```
 
-### 2. Run the Web App (Recommended)
-
+### 웹 UI 실행 (추천)
 ```bash
 python app.py
 ```
+브라우저에서 http://127.0.0.1:5000 접속
 
-Open http://127.0.0.1:5000 in your browser.
-
-### 3. Use the CLI
-
+### CLI 사용
 ```bash
 python elliott_wave_volume_scanner.py --top 80 --min-score 55 --plot
 ```
 
-**Common options:**
+**주요 옵션 (Common Options)**
 
-| Option          | Default | Description                              |
-|-----------------|---------|------------------------------------------|
-| `--top`         | 100     | Number of highest volume stocks to scan  |
-| `--min-score`   | 55      | Minimum Elliott Wave score (0–100)       |
-| `--days`        | 550     | Historical data window (trading days)    |
-| `--reversal`    | 0.032   | ZigZag reversal sensitivity              |
-| `--plot`        | —       | Generate charts for top candidates       |
-| `--output`      | csv     | Export results to CSV                    |
-
----
-
-## 📊 How the Scoring Works
-
-The tool approximates Elliott Wave principles with practical heuristics:
-
-- Strong long-term trend (price > EMA200)
-- Healthy EMA alignment (21 > 55 > 200)
-- Recent swing structure showing Higher Highs / Higher Lows
-- Shallow corrective retracements (ideally ~38–62% Fib zone)
-- Rising volume on impulse moves
-- RSI in the "room to run" zone (not extremely overbought)
-
-Higher scores → stronger confluence for potential Wave 3 or early Wave 5 setups.
-
-**Note:** This is a heuristic reference tool. Real wave counting is subjective.
+| 옵션            | 기본값 | 설명                                      |
+|-----------------|--------|-------------------------------------------|
+| `--top`         | 100    | 거래대금 상위 N개 종목 스캔               |
+| `--min-score`   | 55     | 최소 EW 점수 필터 (0~100)                 |
+| `--days`        | 550    | 분석에 사용할 과거 데이터 일수            |
+| `--reversal`    | 0.032  | ZigZag 반전 민감도                        |
+| `--plot`        | -      | 상위 종목 차트 생성                       |
+| `--output`      | csv    | 결과 CSV 파일명                           |
 
 ---
 
-## 🛡️ Disclaimer
+## 📊 스코어링 원리 (How the Scoring Works)
 
-This project is for **educational and personal research purposes only**.
+### 한국어
+이 도구는 실제 엘리어트 파동 카운팅을 근사하는 실용적인 휴리스틱을 사용합니다:
+- 장기 상승 추세 (종가 > EMA200)
+- EMA 정배열 (21 > 55 > 200)
+- 최근 스윙에서 Higher High / Higher Low 구조
+- 얕은 되돌림 (대략 피보나치 38~62% 구간 선호)
+- Impulse 구간에서의 거래량 확대
+- 추가 상승 여력이 있는 RSI 구간 (46~74)
 
-- Elliott Wave Theory is interpretive.
-- Past performance does not guarantee future results.
-- The authors are not responsible for any financial losses.
-- Always do your own research and manage risk responsibly.
+점수가 높을수록 Wave 3 또는 초기 Wave 5 진입 가능성이 높은 것으로 봅니다.
+
+### English
+The tool uses practical heuristics that approximate Elliott Wave principles:
+- Strong trend (price above EMA200)
+- EMA alignment
+- Higher Highs / Higher Lows in recent swings
+- Healthy corrective retracements (~38-62% Fib zone)
+- Volume expansion on impulse moves
+- RSI with room to run
+
+Higher scores indicate stronger confluence for potential strong upward moves.
 
 ---
 
-## 🛠 Tech Stack
+## 🛡️ 면책 조항 (Disclaimer)
 
-- **Python** + pandas, numpy, FinanceDataReader, matplotlib
-- **Flask** for the beautiful web interface
-- **Bootstrap 5** + custom soft pastel CSS
-- Designed with mental well-being in mind (cute pets included 🐶🐱)
+**이 프로젝트는 교육 및 개인 연구 목적으로만 사용하세요.**
+
+- 엘리어트 파동 이론은 주관적 해석이 많습니다.
+- 과거 성과가 미래 수익을 보장하지 않습니다.
+- 이 도구의 결과로 인한 어떠한 손실에 대해서도 책임지지 않습니다.
+- 실제 투자 결정은 본인의 판단과 충분한 검토, 리스크 관리를 통해 진행해 주세요.
+
+**This project is for educational and personal research purposes only.**
+
+Elliott Wave analysis is highly subjective. The authors are not responsible for any financial losses. Always do your own research.
 
 ---
 
-## 📁 Project Structure
+## 🛠 기술 스택 (Tech Stack)
+
+- Python (pandas, numpy, FinanceDataReader, matplotlib)
+- Flask (웹 UI)
+- Bootstrap 5 + 부드러운 파스텔 커스텀 CSS
+- 마음의 평안을 위해 고안된 디자인 (강아지·고양이 사진 포함)
+
+---
+
+## 📁 프로젝트 구조 (Project Structure)
 
 ```
 .
-├── app.py                          # Flask web server
-├── elliott_wave_volume_scanner.py  # Core scanner + CLI
+├── app.py                              # Flask 웹 서버
+├── elliott_wave_volume_scanner.py      # 핵심 스캐너 + CLI
 ├── requirements.txt
 ├── README.md
 ├── templates/
-│   └── index.html                  # Calming feminine web UI
+│   └── index.html                      # 여성향 calming 웹 UI
 └── static/
     └── css/
         └── main.css
@@ -132,21 +141,24 @@ This project is for **educational and personal research purposes only**.
 
 ---
 
-## ❤️ Why the Soft Design?
+## ❤️ 왜 이렇게 부드러운 디자인인가요?
 
-Because trading can be stressful.  
-The web interface was intentionally made gentle and feminine with calming colors and cute animal photos — so you can analyze without feeling overwhelmed.
+주식 하다 보면 정말 마음이 지칠 때가 많아요.  
+그래서 웹 인터페이스를 일부러 따뜻하고 여성스러운 파스텔 톤으로 만들었고, 분석하는 동안 귀여운 강아지·고양이 사진을 볼 수 있게 했습니다.
 
-Take a breath. You've got this. 🌸
+조금이라도 마음의 여유를 가지면서 분석할 수 있기를 바랍니다. 🌸
 
----
-
-## 📝 License
-
-MIT — feel free to use and modify for personal use.
+Because trading can be mentally exhausting, the web UI was intentionally made soft, feminine, and calming with cute pet images.
 
 ---
 
-**Made with care for traders who need a little peace while hunting for Wave 3s.**
+## 📝 라이선스
 
-Enjoy responsibly! 🐾
+MIT License — 개인 사용 및 수정 자유롭게 하세요.
+
+---
+
+**파도 3을 찾는 모든 트레이더들을 응원합니다.**  
+Take a breath. You've got this. 🐾💕
+
+Enjoy responsibly!

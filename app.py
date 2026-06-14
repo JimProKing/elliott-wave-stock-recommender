@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Elliott Wave Stock Recommender - Flask Web Version
-Beautiful, calming web UI with feminine soft pastel theme + cute dog & cat images for stress relief while trading.
+Elliott Wave Stock Recommender (엘리어트 파동 주식 추천기)
+Flask Web Version with calming feminine pastel theme + cute dog & cat images for mental relief while trading.
 
-Based on Elliott Wave Theory for scanning high trading volume stocks with high upward potential.
+엘리어트 파동 이론 기반 고거래량 종목 상승 가능성 분석 도구
 
 Local run: python app.py
 Access: http://127.0.0.1:5000
@@ -209,9 +209,9 @@ def api_export():
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("Elliott Wave Stock Recommender - Web Server Started")
-    print("Access: http://127.0.0.1:5000")
-    print("Calming feminine UI with pet healing images")
+    print("Elliott Wave Stock Recommender (엘리어트 파동 주식 추천기) 웹 서버 시작")
+    print("접속: http://127.0.0.1:5000")
+    print("부드러운 여성향 UI + 강아지·고양이 힐링 이미지")
     print("=" * 60)
     # debug=True 는 개발용, 로컬에서 편리
     app.run(host="127.0.0.1", port=5000, debug=True, use_reloader=False)
