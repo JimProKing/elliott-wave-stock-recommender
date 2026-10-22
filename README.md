@@ -1,4 +1,9 @@
 # 🌸 Elliott Wave Stock Recommender
+
+| 분류 | 상태 | 스택 | 바로 보기 |
+| --- | --- | --- | --- |
+| 핀테크 · 도구 | 보관 | Python · Flask · pandas | — |
+
 # 엘리어트 파동 주식 추천기
 
 **Elliott Wave Theory-based scanner for high-volume Korean stocks with strong upward potential.**
@@ -162,3 +167,10 @@ MIT License — 개인 사용 및 수정 자유롭게 하세요.
 Take a breath. You've got this. 🐾💕
 
 Enjoy responsibly!
+
+---
+
+**관련 저장소** · [xrp-dashboard](https://github.com/JimProKing/xrp-dashboard) · [elliott-wave-scanner](https://github.com/JimProKing/elliott-wave-scanner) · [longshort-han-nune](https://github.com/JimProKing/longshort-han-nune) · [xrpl_examples](https://github.com/JimProKing/xrpl_examples)
+
+<sub>[JimProKing](https://github.com/JimProKing) · 이영찬 — 전체 저장소는 프로필의 프로젝트 지도에서 분야별로 볼 수 있습니다.</sub>
+<!-- jpk-footer -->
